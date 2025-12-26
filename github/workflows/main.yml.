@@ -2,7 +2,6 @@ name: Build APK Factory
 on:
   repository_dispatch:
     types: [build_app]
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -15,24 +14,12 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.10.0'
-      
-      - name: Create App From Description
-        run: |
-          # هنا الكود بياخد "الوصف" (Description) اللي بعته من الموقع ويحطه في نص التطبيق
+      - run: |
           echo "import 'package:flutter/material.dart';
-          void main() => runApp(MaterialApp(home: Scaffold(
-            appBar: AppBar(title: Text('${{ github.event.client_payload.app_name }}')),
-            body: Center(child: Padding(
-              padding: EdgeInsets.all(20),
-              child: Text('طلبك الذي يتم تنفيذه: ${{ github.event.client_payload.description }}', 
-              style: TextStyle(fontSize: 20), textAlign: TextAlign.center),
-            ))
-          )));" > lib/main.dart
+          void main() => runApp(MaterialApp(home: Scaffold(body: Center(child: Text('${{ github.event.client_payload.description }}')))));" > lib/main.dart
           flutter pub get
           flutter build apk --release
-
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4
         with:
           name: ${{ github.event.client_payload.app_name }}
           path: build/app/outputs/flutter-apk/app-release.apk
