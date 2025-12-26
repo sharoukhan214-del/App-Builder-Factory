@@ -5,7 +5,7 @@ on:
 
 jobs:
   build:
-    name: "Building Your APK"
+    name: "Building Your Custom Web App"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -23,8 +23,23 @@ jobs:
           flutter-version: '3.10.0'
           channel: 'stable'
 
+      - name: Create Custom App Code
+        run: |
+          # هنا بنبرمج التطبيق يفتح الموقع اللي إنت طلبته
+          echo "import 'package:flutter/material.dart';
+          import 'package:webview_flutter/webview_flutter.dart';
+          void main() => runApp(MaterialApp(home: WebViewPage()));
+          class WebViewPage extends StatelessWidget {
+            @override
+            Widget build(BuildContext context) {
+              return Scaffold(body: SafeArea(child: WebView(initialUrl: '${{ github.event.client_payload.description }}', javascriptMode: JavascriptMode.unrestricted)));
+            }
+          }" > lib/main.dart
+
       - name: Get Dependencies
-        run: flutter pub get
+        run: |
+          flutter pub add webview_flutter
+          flutter pub get
 
       - name: Build APK
         run: flutter build apk --release
@@ -32,5 +47,5 @@ jobs:
       - name: Upload APK Result
         uses: actions/upload-artifact@v4
         with:
-          name: My-App-APK
+          name: ${{ github.event.client_payload.app_name }}
           path: build/app/outputs/flutter-apk/app-release.apk
