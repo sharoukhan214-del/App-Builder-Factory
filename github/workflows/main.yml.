@@ -1,45 +1,36 @@
-# اسم العملية اللي بتظهر في GitHub
 name: Build APK Factory
-
-# التشغيل بيحصل لما موقعك يبعت "إشارة" (Dispatch)
 on:
   repository_dispatch:
     types: [build_app]
 
 jobs:
   build:
-    name: "جاري بناء ملف الـ APK"
+    name: "Building Your APK"
     runs-on: ubuntu-latest
     steps:
-      # الخطوة 1: سحب الكود من المستودع بتاعك
-      - name: "سحب الكود"
+      - name: Checkout Code
         uses: actions/checkout@v4
 
-      # الخطوة 2: تجهيز البيئة (جافا) الضرورية للأندرويد
-      - name: "تجهيز الجافا"
+      - name: Setup Java
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
 
-      # الخطوة 3: تثبيت محرك فلاتر (Flutter) اللي بيبني التطبيق
-      - name: "تثبيت Flutter"
+      - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.10.0'
           channel: 'stable'
 
-      # الخطوة 4: تحميل المكتبات اللازمة للكود
-      - name: "تحميل المكتبات"
+      - name: Get Dependencies
         run: flutter pub get
 
-      # الخطوة 5: الأمر الفعلي لصناعة ملف الـ APK
-      - name: "بدء صناعة الـ APK"
+      - name: Build APK
         run: flutter build apk --release
 
-      # الخطوة 6: رفع الملف النهائي عشان موقعك يقدر يشوفه ويحمله
-      - name: "رفع الملف الناتج للموقع"
+      - name: Upload APK Result
         uses: actions/upload-artifact@v4
         with:
-          name: My-Magic-App
+          name: My-App-APK
           path: build/app/outputs/flutter-apk/app-release.apk
