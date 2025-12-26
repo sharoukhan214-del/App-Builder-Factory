@@ -5,46 +5,26 @@ on:
 
 jobs:
   build:
-    name: "Building Your Custom Web App"
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      - name: Setup Java
-        uses: actions/setup-java@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
-
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
+      - uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.10.0'
-          channel: 'stable'
-
-      - name: Create Custom App Code
+      
+      - name: Create App
         run: |
-          # هنا بنبرمج التطبيق يفتح الموقع اللي إنت طلبته
+          # كود بسيط عشان التطبيق يفتح ويشتغل فوراً بالاسم اللي اخترته
           echo "import 'package:flutter/material.dart';
-          import 'package:webview_flutter/webview_flutter.dart';
-          void main() => runApp(MaterialApp(home: WebViewPage()));
-          class WebViewPage extends StatelessWidget {
-            @override
-            Widget build(BuildContext context) {
-              return Scaffold(body: SafeArea(child: WebView(initialUrl: '${{ github.event.client_payload.description }}', javascriptMode: JavascriptMode.unrestricted)));
-            }
-          }" > lib/main.dart
-
-      - name: Get Dependencies
-        run: |
-          flutter pub add webview_flutter
+          void main() => runApp(MaterialApp(home: Scaffold(body: Center(child: Text('تطبيق محمد: ${{ github.event.client_payload.app_name }}')))));" > lib/main.dart
           flutter pub get
+          flutter build apk --release
 
-      - name: Build APK
-        run: flutter build apk --release
-
-      - name: Upload APK Result
+      - name: Upload
         uses: actions/upload-artifact@v4
         with:
           name: ${{ github.event.client_payload.app_name }}
