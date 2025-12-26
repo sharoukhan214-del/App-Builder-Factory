@@ -1,8 +1,9 @@
 name: Build_APK_Factory
 
 on:
-  repository_dispatch:
-    types: [build_app]
+  push:
+    branches:
+      - main
   workflow_dispatch:
 
 jobs:
@@ -22,8 +23,8 @@ jobs:
       - name: Install Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.10.0'
-          channel: 'stable'
+          flutter-version: '3.22.0'
+          channel: stable
 
       - name: Install dependencies
         run: flutter pub get
