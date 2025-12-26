@@ -15,9 +15,12 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.10.0'
-      - run: flutter build apk --release
+      
+      - name: Build APK
+        run: flutter build apk --release
+
       - name: Upload APK
         uses: actions/upload-artifact@v3
         with:
-          name: app-release
+          name: my-app-apk
           path: build/app/outputs/flutter-apk/app-release.apk
