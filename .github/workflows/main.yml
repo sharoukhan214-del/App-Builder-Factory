@@ -1,1 +1,11 @@
-
+name: Build APK Factory
+on:
+  repository_dispatch:
+    types: [build_app]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Success
+        run: echo "Factory is Running!"
